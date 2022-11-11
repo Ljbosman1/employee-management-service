@@ -1,0 +1,8 @@
+# Master branches
+https://github.com/django/django/archive/main.tar.gz
+https://github.com/encode/django-rest-framework/archive/master.tar.gz
+
+whitenoise==5.2.0
+django-cors-headers==3.13.0
+docker-compose==1.29.2
+psycopg2-binary==2.9.5
