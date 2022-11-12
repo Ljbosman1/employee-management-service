@@ -12,7 +12,7 @@ from .serializers import EmployeeRequestSerializer, EmployeeResponseSerializer, 
 def employees_list(request):
     if request.method == 'GET':
         data = Employee.objects.all()
-        serializer = EmployeeRequestSerializer(data, context={'request': request}, many=True)
+        serializer = EmployeeResponseSerializer(data, context={'request': request}, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':

@@ -1,0 +1,7 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow:
+Deon's PC
+Deon's Laptop
+Deon's Phone
+Deon's Car
