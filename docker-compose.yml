@@ -14,6 +14,21 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
+  react:
+    build: ./frontend
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./frontend:/app
+      # One-way volume to use node_modules from inside image
+      - /app/node_modules
+    ports:
+      - "80:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - django
+    command: npm start
   db:
     image: postgres
     ports:
@@ -23,3 +38,4 @@ services:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: employeedb
+
