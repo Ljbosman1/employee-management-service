@@ -1,1 +1,1 @@
-// TODO: Put API URLS here
+export const EMPLOYEES_API_URL = "http://localhost:8000/employees/api/";

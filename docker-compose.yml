@@ -20,7 +20,6 @@ services:
     tty: true
     volumes:
       - ./frontend:/app
-      # One-way volume to use node_modules from inside image
       - /app/node_modules
     ports:
       - "80:3000"
