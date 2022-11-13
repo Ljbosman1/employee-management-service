@@ -12,14 +12,11 @@ import {
 } from "reactstrap";
 
 import EmployeeList from "./components/EmployeeList";
-
-
-import axios from "axios";
-
-import { EMPLOYEES_API_URL } from "../constants";
+import NewEmployeeModal from "./components/NewEmployeeModal";
 
 import { connect } from "react-redux";
-import { editSearch, setEmployees } from "../redux/actions";
+import { editSearch, getEmployeesFromApi } from "../redux/actions";
+import { getEmployeeList } from "../redux/selectors";
 
 class Home extends Component {
   state = {
@@ -31,16 +28,13 @@ class Home extends Component {
     this.resetState();
   }
 
-  getEmployeesFromApi = () => {
-    axios.get(EMPLOYEES_API_URL).then(
-      res =>this.setState({ employees: res.data }, () => {
-        this.props.setEmployees(this.state.employees);
-      })
-    );
+  getEmployees = () => {
+    this.props.getEmployeesFromApi();
+    this.setState({ employees: this.props.employees })
   };
 
   resetState = () => {
-    this.getEmployeesFromApi();
+    this.getEmployees();
   };
 
   editSearch = input => {
@@ -58,7 +52,7 @@ class Home extends Component {
             <Navbar>
                 <div>
                     <NavbarBrand href="/">Employees</NavbarBrand>
-                    <NavbarText>There are {!this.state.employees || this.state.employees.length <= 0 ? (0):(this.state.employees.length )} employees</NavbarText>
+                    <NavbarText>There are {!this.props.employees || this.props.employees.length <= 0 ? (0):(this.props.employees.length )} employees</NavbarText>
                 </div>
                 <Nav navbar>    
                     <NavItem>
@@ -73,12 +67,17 @@ class Home extends Component {
             <EmployeeList />
           </Col>
         </Row>
+        <Row>
+          <Col>
+            <NewEmployeeModal create={true} />
+          </Col>
+        </Row>
       </Container>
     );
   }
 }
-
+const mapStateToProps  = (state) => ({employees:state.employees})
 export default connect(
-  null,
-  {  editSearch, setEmployees }
+  mapStateToProps,
+  {  editSearch, getEmployeesFromApi, getEmployeeList }
 )(Home);
