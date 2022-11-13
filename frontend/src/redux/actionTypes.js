@@ -1,0 +1,3 @@
+export const EDIT_SEARCH = "EDIT_SEARCH";
+export const GET_EMPLOYEES = "GET_EMPLOYEES";
+export const SET_EMPLOYEES = "SET_EMPLOYEES";
