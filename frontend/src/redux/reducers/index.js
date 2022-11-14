@@ -4,15 +4,15 @@ import {
   GET_EMPLOYEES_FROM_API, 
   EMPLOYEES_ERROR, 
   SET_SELECTED_EMPLOYEE, 
-  DELETE_EMPLOYEE, 
-  TOGGLE_MODAL, 
+  DELETE_EMPLOYEE,
   EDIT_EMPLOYEE,
 } from "../actionTypes";
 
 const initialState = {
   employees: [],
   searchTerm: "",
-  modalState: false,
+  confirmationModalState: false,
+  removalModalState: false,
   selectedEmployee: {},
 };
 
@@ -41,12 +41,6 @@ export default function(state = initialState, action) {
       return {
         ...state,
         selectedEmployee: action.payload
-      };
-    }
-    case TOGGLE_MODAL: {
-      return {
-        ...state,
-        modalState: !state.modalState
       };
     }
     case CREATE_EMPLOYEE: {

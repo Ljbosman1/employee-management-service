@@ -3,7 +3,7 @@ import React from "react";
 import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 import { connect } from "react-redux";
 
-import { toggleModal, getEmployeesFromApi, createEmployee, editEmployee } from "../../redux/actions";
+import { getEmployeesFromApi, createEmployee, editEmployee } from "../../redux/actions";
 
 class NewEmployeeForm extends React.Component {
   state = {
@@ -50,7 +50,6 @@ class NewEmployeeForm extends React.Component {
     createEmployee = e => {
       e.preventDefault();
       this.props.createEmployee(this.state);
-      this.props.toggleModal();
       this.resetState();
     }
 
@@ -164,13 +163,12 @@ class NewEmployeeForm extends React.Component {
       }
 }
 const mapStateToProps = state => {
-  const { selectedEmployee, modalState } = state;
+  const { selectedEmployee } = state;
   return { 
     selectedEmployee: selectedEmployee, 
-    modalState: modalState
   } 
 };
 export default connect(
   mapStateToProps,
-  { toggleModal, getEmployeesFromApi, createEmployee, editEmployee}
+  { getEmployeesFromApi, createEmployee, editEmployee}
 )(NewEmployeeForm);

@@ -6,7 +6,6 @@ import {
   EMPLOYEES_ERROR, 
   SET_SELECTED_EMPLOYEE, 
   DELETE_EMPLOYEE, 
-  TOGGLE_MODAL,
 } from "./actionTypes";
 import { EMPLOYEES_API_URL } from "../constants";
 
@@ -88,11 +87,5 @@ export const setSelectedEmployee = selected_employee => ({
   type: SET_SELECTED_EMPLOYEE,
   payload: {
     selected_employee
-  }
-});
-
-export const toggleModal = () => ({
-  type: TOGGLE_MODAL,
-  payload: {
   }
 });

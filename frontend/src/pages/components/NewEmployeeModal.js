@@ -2,16 +2,20 @@ import React, { Component, Fragment} from "react";
 import { Button, Modal, ModalHeader, ModalBody } from "reactstrap";
 import NewEmployeeForm from "./NewEmployeeForm";
 import { connect } from "react-redux";
-import { toggleModal } from "../../redux/actions";
 
 class NewEmployeeModal extends Component {
+  state = {
+    modal: false
+  };
+
   toggle = () => {
-    this.props.toggleModal();
+    this.setState(previous => ({
+      modal: !previous.modal
+    }));
   };
 
   render() {
     const create = this.props.create;
-    const modalState = this.props.modalState;
 
     var title = "Editing Employee";
     var button = <Button onClick={this.toggle}>Edit</Button>;
@@ -32,7 +36,7 @@ class NewEmployeeModal extends Component {
     return (
       <Fragment>
         {button}
-        <Modal isOpen={modalState} toggle={this.toggle}>
+        <Modal isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>{title}</ModalHeader>
           <ModalBody>
             <NewEmployeeForm />
@@ -43,10 +47,4 @@ class NewEmployeeModal extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return { modalState: state.modalState };
-};
-export default connect(
-  mapStateToProps,
-  { toggleModal }
-)(NewEmployeeModal);
+export default connect()(NewEmployeeModal);

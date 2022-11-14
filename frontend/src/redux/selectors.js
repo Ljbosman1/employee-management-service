@@ -7,8 +7,6 @@ export const getEmployeeToDelete = (state) => state.employeeToDelete;
 
 export const getEmployeeToCreate = (state) => state.employeeToCreate;
 
-export const getModalState = (state) => state.modalState;
-
 export const getEmployeesBySearchTerm = (store, state) => {
   const allEmployees = getEmployeeList(store);
   return (state.searchTerm && state.searchTerm.length > 0) ? (

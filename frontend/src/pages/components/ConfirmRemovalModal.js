@@ -2,12 +2,18 @@ import React, { Component, Fragment } from "react";
 import { Modal, ModalHeader, Button, ModalFooter } from "reactstrap";
 import { connect } from "react-redux";
 
-import { toggleModal, getEmployeesFromApi, deleteEmployee } from "../../redux/actions";
+import { getEmployeesFromApi, deleteEmployee } from "../../redux/actions";
 
 
 class ConfirmRemovalModal extends Component {
+  state = {
+    modal: false
+  };
+
   toggle = () => {
-    this.props.toggleModal();
+    this.setState(previous => ({
+      modal: !previous.modal
+    }));
   };
 
   deleteEmployee = employeeId => {
@@ -22,7 +28,7 @@ class ConfirmRemovalModal extends Component {
         <Button color="danger" onClick={() => this.toggle()}>
           Remove
         </Button>
-        <Modal isOpen={this.props.modalState} toggle={this.toggle}>
+        <Modal isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>
             Do you really wanna delete the employee?
           </ModalHeader>
@@ -46,9 +52,9 @@ class ConfirmRemovalModal extends Component {
 }
 
 const mapStateToProps = state => {
-  return { modalState: state.modalState, selectedEmployee: state.selectedEmployee };
+  return { selectedEmployee: state.selectedEmployee };
 };
 export default connect(
   mapStateToProps,
-  { toggleModal, getEmployeesFromApi, deleteEmployee }
+  { getEmployeesFromApi, deleteEmployee }
 )(ConfirmRemovalModal);
