@@ -37,7 +37,6 @@ export default function(state = initialState, action) {
       };
     }
     case SET_SELECTED_EMPLOYEE: {
-      console.log("SET THE SELECTED EMPLOYEE: ", action.payload);
       return {
         ...state,
         selectedEmployee: action.payload

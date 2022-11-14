@@ -36,7 +36,7 @@ class EmployeeList extends Component {
                 <td>{filteredEmployee.contact_number}</td>
                 <td>{filteredEmployee.email}</td>
                 <td align="center">
-                  <NewEmployeeModal create={false}/>
+                  <NewEmployeeModal create={false} employeeDetails={filteredEmployee}/>
                   <ConfirmRemovalModal />
                 </td>
               </tr>

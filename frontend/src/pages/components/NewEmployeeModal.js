@@ -2,6 +2,7 @@ import React, { Component, Fragment} from "react";
 import { Button, Modal, ModalHeader, ModalBody } from "reactstrap";
 import NewEmployeeForm from "./NewEmployeeForm";
 import { connect } from "react-redux";
+import { setSelectedEmployee } from "../../redux/actions";
 
 class NewEmployeeModal extends Component {
   state = {
@@ -11,12 +12,13 @@ class NewEmployeeModal extends Component {
   toggle = () => {
     this.setState(previous => ({
       modal: !previous.modal
-    }));
+    }), () => {
+      this.props.setSelectedEmployee(this.state.modal? this.props.employeeDetails : {})
+    });
   };
 
   render() {
     const create = this.props.create;
-
     var title = "Editing Employee";
     var button = <Button onClick={this.toggle}>Edit</Button>;
     if (create) {
@@ -47,4 +49,7 @@ class NewEmployeeModal extends Component {
   }
 }
 
-export default connect()(NewEmployeeModal);
+export default connect(
+  null,
+  { setSelectedEmployee }
+)(NewEmployeeModal);

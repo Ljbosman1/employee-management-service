@@ -3,6 +3,8 @@ export const getEmployeeList = state => state.employees;
 
 export const getSearchTerm = (state) => state.searchTerm;
 
+export const getSelectedEmployee = (state) => state.selectedEmployee;
+
 export const getEmployeeToDelete = (state) => state.employeeToDelete;
 
 export const getEmployeeToCreate = (state) => state.employeeToCreate;

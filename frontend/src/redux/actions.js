@@ -83,9 +83,7 @@ export const editSearch = searchTerm => ({
   }
 });
 
-export const setSelectedEmployee = selected_employee => ({
+export const setSelectedEmployee = selectedEmployee => ({
   type: SET_SELECTED_EMPLOYEE,
-  payload: {
-    selected_employee
-  }
+  payload: selectedEmployee
 });
