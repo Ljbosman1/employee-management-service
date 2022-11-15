@@ -1,10 +1,32 @@
-import React from "react";
-import { Table } from "reactstrap";
+import React, { Component } from "react";
+import { Table, Button } from "reactstrap";
 import { connect } from "react-redux";
 import { getEmployeesBySearchTerm } from "../../redux/selectors";
+import { getEmployeesFromApi, deleteEmployee } from "../../redux/actions";
+import NewEmployeeModal from "./NewEmployeeModal";
 
 
-const EmployeeList = ({ employees }) => {
+class EmployeeList extends Component {
+  state = {
+    employees: []
+  }
+
+  componentDidMount() {
+    this.resetState();
+  }
+
+  resetState = () => {
+    this.setState({ employees: this.props.employees });
+  }
+
+  deleteEmployee = employeeId => {
+    this.props.deleteEmployee(employeeId).then(() => {
+      this.resetState()
+    });;
+    
+  };
+
+  render() {
     return (
       <Table dark>
         <thead>
@@ -18,31 +40,42 @@ const EmployeeList = ({ employees }) => {
           </tr>
         </thead>
         <tbody>
-          {!employees || employees.length <= 0 ? (
+          {!this.props.employees || this.props.employees.length <= 0 ? (
             <tr>
               <td colSpan="6" align="center">
                 <b>No Employees</b>
               </td>
             </tr>
           ) : (
-            employees.map(filteredEmployee => (
+            this.props.employees.map(filteredEmployee => (
               <tr key={filteredEmployee.employee_id}>
                 <td>{filteredEmployee.employee_id}</td>
                 <td>{filteredEmployee.first_name}</td>
                 <td>{filteredEmployee.last_name}</td>
                 <td>{filteredEmployee.contact_number}</td>
                 <td>{filteredEmployee.email}</td>
+                <td align="center">
+                  <NewEmployeeModal create={false} employeeDetails={filteredEmployee}/>
+                  <Button color="danger" onClick={() => this.deleteEmployee(filteredEmployee.employee_id)}>
+                    Remove
+                  </Button>
+                </td>
               </tr>
             ))
           )}
         </tbody>
       </Table>
     );
+  }
 }
+
 
 const mapStateToProps = state => {
   const { searchTerm } = state;
   const employees = getEmployeesBySearchTerm(state, searchTerm);
   return { employees };
 };
-export default connect(mapStateToProps)(EmployeeList);
+export default connect(
+  mapStateToProps,
+  { getEmployeesFromApi, deleteEmployee }
+)(EmployeeList);
