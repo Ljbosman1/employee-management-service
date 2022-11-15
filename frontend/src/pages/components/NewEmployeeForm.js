@@ -7,6 +7,8 @@ import { getEmployeesFromApi, createEmployee, editEmployee } from "../../redux/a
 
 import {DEFAULT_EMPLOYEE} from "../../constants";
 
+import SkillsComponent from "./SkillsComponent";
+
 class NewEmployeeForm extends React.Component {
     state = DEFAULT_EMPLOYEE;
 
@@ -51,6 +53,7 @@ class NewEmployeeForm extends React.Component {
       const selectedEmployee = this.props.selectedEmployee
       return (
         <Form onSubmit={ selectedEmployee.employee_id ? this.editEmployee : this.createEmployee}>
+          <h5><u>Personal Details</u></h5>
           <FormGroup>
             <Label for="first_name">First Name:</Label>
             <Input
@@ -101,6 +104,7 @@ class NewEmployeeForm extends React.Component {
               required
             />
           </FormGroup>
+          <h5><u>Address Info</u></h5>
           <FormGroup>
             <Label for="street_name">Street Address:</Label>
             <Input
@@ -141,6 +145,7 @@ class NewEmployeeForm extends React.Component {
               required
             />
           </FormGroup>
+          <SkillsComponent />
           <Button>Save</Button>
         </Form>
       );

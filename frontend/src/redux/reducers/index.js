@@ -6,12 +6,18 @@ import {
   SET_SELECTED_EMPLOYEE, 
   DELETE_EMPLOYEE,
   EDIT_EMPLOYEE,
+  GET_SKILLS,
+  GET_SKILL_DATA,
+  CREATE_SKILLS,
+  ADD_SKILL_TO_STATE
 } from "../actionTypes";
 
 const initialState = {
   employees: [],
   searchTerm: "",
   selectedEmployee: {},
+  skillData: {},
+  skills: []
 };
 
 export default function(state = initialState, action) {
@@ -47,6 +53,18 @@ export default function(state = initialState, action) {
         selectedEmployee: {}
       };
     }
+    case CREATE_SKILLS: {
+      return {
+        ...state,
+        skills: [...state.skills].concat(action.payload)
+      };
+    }
+    case ADD_SKILL_TO_STATE: {
+      return {
+        ...state,
+        skills: [...state.skills].concat(action.payload)
+      };
+    }
     case EDIT_EMPLOYEE: {
       var tempArr = [...state.employees]
       tempArr = tempArr.map(function(item) { return item.employee_id === action.payload.employee_id ? action.payload : item; });
@@ -63,6 +81,18 @@ export default function(state = initialState, action) {
         ...state,
         employees: employees.filter(employee => employee.employee_id !== action.payload),
         selectedEmployee: {}
+      };
+    }
+    case GET_SKILLS: {
+      return {
+        ...state,
+        skills: action.payload
+      };
+    }
+    case GET_SKILL_DATA: {
+      return {
+        ...state,
+        skillData: action.payload
       };
     }
     default:

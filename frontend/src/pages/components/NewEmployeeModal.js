@@ -38,7 +38,7 @@ class NewEmployeeModal extends Component {
     return (
       <Fragment>
         {button}
-        <Modal isOpen={this.state.modal} toggle={this.toggle}>
+        <Modal size="lg" style={{maxWidth: '800px', width: '100%'}} isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>{title}</ModalHeader>
           <ModalBody>
             <NewEmployeeForm toggle={this.toggle}/>

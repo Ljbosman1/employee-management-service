@@ -5,9 +5,13 @@ import {
   GET_EMPLOYEES_FROM_API, 
   EMPLOYEES_ERROR, 
   SET_SELECTED_EMPLOYEE, 
-  DELETE_EMPLOYEE, 
+  DELETE_EMPLOYEE,
+  GET_SKILLS,
+  GET_SKILL_DATA,
+  CREATE_SKILLS,
+  ADD_SKILL_TO_STATE
 } from "./actionTypes";
-import { EMPLOYEES_API_URL } from "../constants";
+import { EMPLOYEES_API_URL, SKILLS_API_URL, SKILL_DATA_API_URL } from "../constants";
 
 import axios from 'axios'
 
@@ -27,12 +31,60 @@ export const getEmployeesFromApi = () => async dispatch => {
   }
 }
 
+export const getSkillsFromApi = () => async dispatch => {
+  try{
+    const res = await axios.get(SKILLS_API_URL);
+    dispatch( {
+        type: GET_SKILLS,
+        payload: res.data
+    })
+  }
+  catch(e){
+      dispatch( {
+          type: EMPLOYEES_ERROR,
+          payload: console.log(e),
+      })
+  }
+}
+
+export const getSkillDataFromApi = () => async dispatch => {
+  try{
+    const res = await axios.get(SKILL_DATA_API_URL);
+    dispatch( {
+        type: GET_SKILL_DATA,
+        payload: res.data
+    })
+  }
+  catch(e){
+      dispatch( {
+          type: EMPLOYEES_ERROR,
+          payload: console.log(e),
+      })
+  }
+}
+
 export const createEmployee = (payload) => async dispatch => {
   try{
     const res = await axios.post(EMPLOYEES_API_URL, payload);
     dispatch( {
         type: CREATE_EMPLOYEE,
         payload: res.data
+    })
+  }
+  catch(e){
+      dispatch( {
+          type: EMPLOYEES_ERROR,
+          payload: console.log(e),
+      })
+  }
+}
+
+export const createSkills = (payload) => async dispatch => {
+  try{
+    await axios.post(SKILLS_API_URL, payload);
+    dispatch( {
+        type: CREATE_SKILLS,
+        payload: payload
     })
   }
   catch(e){
@@ -86,3 +138,16 @@ export const setSelectedEmployee = selectedEmployee => ({
   type: SET_SELECTED_EMPLOYEE,
   payload: selectedEmployee
 });
+
+export const addSkillToState = (employeeId, name, experience, rating) => async dispatch => {
+  const skill = {
+    employee_id: employeeId,
+    name: name,
+    years_experience: experience,
+    seniority_rating: rating
+  }
+  dispatch({
+    type: ADD_SKILL_TO_STATE,
+    payload: skill,
+  })
+};

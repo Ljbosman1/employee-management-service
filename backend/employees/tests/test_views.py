@@ -186,10 +186,10 @@ class SkillViewTests(TestCase):
         response = self.client.get(self.skill_url)
         data = json.loads(response.content)
         skill = {
-            'name': self.test_skill.name,
-            'years_experience': self.test_skill.years_experience,
-            'seniority_rating': self.test_skill.seniority_rating,
-            'employee_id': self.test_employee.employee_id,
+            "name": self.test_skill.name,
+            "years_experience": self.test_skill.years_experience,
+            "seniority_rating": self.test_skill.seniority_rating,
+            "employee_id": self.test_employee.employee_id,
         }
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data, skill)
