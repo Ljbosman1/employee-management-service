@@ -41,7 +41,7 @@ class NewEmployeeModal extends Component {
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>{title}</ModalHeader>
           <ModalBody>
-            <NewEmployeeForm />
+            <NewEmployeeForm toggle={this.toggle}/>
           </ModalBody>
         </Modal>
       </Fragment>

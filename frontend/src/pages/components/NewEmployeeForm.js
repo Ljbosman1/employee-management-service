@@ -29,16 +29,23 @@ class NewEmployeeForm extends React.Component {
 
     createEmployee = e => {
       e.preventDefault();
-      this.props.createEmployee(this.state);
-      this.resetState();
+      this.props.createEmployee(this.state).then(() => {
+        this.props.toggle()
+      });
     }
 
     editEmployee = e => {
       e.preventDefault();
       const selectedEmployee = this.props.selectedEmployee;
-      this.props.editEmployee(selectedEmployee.employee_id, this.state);
-      console.log("TEST");
+      this.props.editEmployee(selectedEmployee.employee_id, this.state).then(() => {
+        this.props.toggle()
+      });
+      
     };
+
+    defaultIfEmpty = value => {
+      return value === "" ? "" : value;
+  };
     
     render() {
       const selectedEmployee = this.props.selectedEmployee
@@ -50,7 +57,7 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="first_name"
               onChange={this.onChange}
-              value={selectedEmployee.first_name}
+              value={this.defaultIfEmpty(this.state.first_name)}
               required
             />
           </FormGroup>
@@ -60,7 +67,7 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="last_name"
               onChange={this.onChange}
-              value={selectedEmployee.last_name}
+              value={this.defaultIfEmpty(this.state.last_name)}
               required
             />
           </FormGroup>
@@ -70,7 +77,7 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="contact_number"
               onChange={this.onChange}
-              value={selectedEmployee.contact_number}
+              value={this.defaultIfEmpty(this.state.contact_number)}
               required
             />
           </FormGroup>
@@ -80,7 +87,7 @@ class NewEmployeeForm extends React.Component {
               type="email"
               name="email"
               onChange={this.onChange}
-              value={selectedEmployee.email}
+              value={this.defaultIfEmpty(this.state.email)}
               required
             />
           </FormGroup>
@@ -90,7 +97,7 @@ class NewEmployeeForm extends React.Component {
               name="date_of_birth"
               type="date"
               onChange={this.onChange}
-              value={selectedEmployee.date_of_birth}
+              value={this.state.date_of_birth}
               required
             />
           </FormGroup>
@@ -100,7 +107,7 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="street_name"
               onChange={this.onChange}
-              value={selectedEmployee.street_name}
+              value={this.defaultIfEmpty(this.state.street_name)}
               required
             />
           </FormGroup>
@@ -110,7 +117,7 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="city"
               onChange={this.onChange}
-              value={selectedEmployee.city}
+              value={this.defaultIfEmpty(this.state.city)}
               required
             />
           </FormGroup>
@@ -120,7 +127,7 @@ class NewEmployeeForm extends React.Component {
               type="number"
               name="postal_code"
               onChange={this.onChange}
-              value={selectedEmployee.postal_code}
+              value={this.defaultIfEmpty(this.state.postal_code)}
               required
             />
           </FormGroup>
@@ -130,7 +137,7 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="country"
               onChange={this.onChange}
-              value={selectedEmployee.country}
+              value={this.defaultIfEmpty(this.state.country)}
               required
             />
           </FormGroup>
@@ -141,7 +148,10 @@ class NewEmployeeForm extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const selectedEmployee = Object.keys(state.selectedEmployee).length === 0? DEFAULT_EMPLOYEE: state.selectedEmployee;
+  var selectedEmployee = DEFAULT_EMPLOYEE
+  if (state.selectedEmployee) {
+    selectedEmployee = (Object.keys(state.selectedEmployee).length) === 0? DEFAULT_EMPLOYEE: state.selectedEmployee;
+  }
   return  { selectedEmployee };
 };
 export default connect(

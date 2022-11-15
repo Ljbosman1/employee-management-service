@@ -12,7 +12,6 @@ import { EMPLOYEES_API_URL } from "../constants";
 import axios from 'axios'
 
 export const getEmployeesFromApi = () => async dispatch => {
-
   try{
     const res = await axios.get(EMPLOYEES_API_URL);
     dispatch( {
@@ -30,7 +29,7 @@ export const getEmployeesFromApi = () => async dispatch => {
 
 export const createEmployee = (payload) => async dispatch => {
   try{
-    const res = axios.post(EMPLOYEES_API_URL, payload);
+    const res = await axios.post(EMPLOYEES_API_URL, payload);
     dispatch( {
         type: CREATE_EMPLOYEE,
         payload: res.data
@@ -46,10 +45,10 @@ export const createEmployee = (payload) => async dispatch => {
 
 export const editEmployee = (employeeId, payload) => async dispatch => {
   try{
-    const res = axios.put(EMPLOYEES_API_URL + employeeId, payload);
+    axios.put(EMPLOYEES_API_URL + employeeId, payload);
     dispatch( {
         type: EDIT_EMPLOYEE,
-        payload: res.data
+        payload: payload
     })
   }
   catch(e){
@@ -62,10 +61,10 @@ export const editEmployee = (employeeId, payload) => async dispatch => {
 
 export const deleteEmployee = (employeeId) => async dispatch => {
   try{
-    const res = axios.delete(EMPLOYEES_API_URL + employeeId);
+    axios.delete(EMPLOYEES_API_URL + employeeId);
     dispatch( {
         type: DELETE_EMPLOYEE,
-        payload: res.data
+        payload: employeeId
     })
   }
   catch(e){

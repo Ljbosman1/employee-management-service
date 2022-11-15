@@ -29,8 +29,10 @@ class Home extends Component {
   }
 
   getEmployees = () => {
-    this.props.getEmployeesFromApi();
-    this.setState({ employees: this.props.employees })
+    this.props.getEmployeesFromApi().then(() => {
+      this.setState({ employees: this.props.employees });
+    });
+    
   };
 
   resetState = () => {
@@ -52,7 +54,7 @@ class Home extends Component {
             <Navbar>
                 <div>
                     <NavbarBrand href="/">Employees</NavbarBrand>
-                    <NavbarText>There are {!this.props.employees || this.props.employees.length <= 0 ? (0):(this.props.employees.length )} employees</NavbarText>
+                    <NavbarText>There are {!this.props.employees || this.props.employees.length <= 0 ? (0):(this.props.employees.length )} employees. </NavbarText>
                 </div>
                 <Nav navbar>    
                     <NavItem>
@@ -76,7 +78,9 @@ class Home extends Component {
     );
   }
 }
-const mapStateToProps  = (state) => ({employees:state.employees})
+const mapStateToProps  = (state) => {
+  return { employees: state.employees }
+};
 export default connect(
   mapStateToProps,
   {  editSearch, getEmployeesFromApi, getEmployeeList }

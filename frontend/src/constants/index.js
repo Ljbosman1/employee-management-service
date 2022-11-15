@@ -8,7 +8,7 @@ export const DEFAULT_EMPLOYEE = {
     last_name: "",
     contact_number: "",
     email: "",
-    date_of_birth: new Date("2022-03-25"),
+    date_of_birth: "",
     street_name: "",
     city: "",
     postal_code: "",

@@ -11,8 +11,6 @@ import {
 const initialState = {
   employees: [],
   searchTerm: "",
-  confirmationModalState: false,
-  removalModalState: false,
   selectedEmployee: {},
 };
 
@@ -21,7 +19,7 @@ export default function(state = initialState, action) {
     case GET_EMPLOYEES_FROM_API: {
       return {
         ...state,
-        employees:action.payload
+        employees: action.payload,
       };
     }
     case EMPLOYEES_ERROR: {
@@ -45,18 +43,25 @@ export default function(state = initialState, action) {
     case CREATE_EMPLOYEE: {
       return {
         ...state,
+        employees: [...state.employees, action.payload],
         selectedEmployee: {}
       };
     }
     case EDIT_EMPLOYEE: {
+      var tempArr = [...state.employees]
+      tempArr = tempArr.map(function(item) { return item.employee_id === action.payload.employee_id ? action.payload : item; });
+      
       return {
         ...state,
-        selectedEmployee: {}
+        employees: tempArr,
+        selectedEmployee: {},
       };
     }
     case DELETE_EMPLOYEE: {
+      var employees = [...state.employees]
       return {
         ...state,
+        employees: employees.filter(employee => employee.employee_id !== action.payload),
         selectedEmployee: {}
       };
     }
