@@ -64,6 +64,13 @@ def skills_list(request):
     elif request.method == 'POST':
         serializer = SkillSerializer(data=request.data, many=True)
         if serializer.is_valid():
+            # Remove all skills related to employee ids given before saving
+            deleted_ids = []
+            for skill in request.data:
+                if skill["employee_id"] in deleted_ids:
+                    continue
+                Skill.objects.filter(employee=skill["employee_id"]).delete()
+                deleted_ids.append(skill["employee_id"])
             serializer.save()
             return Response(
                 status=status.HTTP_201_CREATED,

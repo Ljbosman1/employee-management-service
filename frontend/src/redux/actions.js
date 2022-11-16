@@ -9,7 +9,7 @@ import {
   GET_SKILLS,
   GET_SKILL_DATA,
   CREATE_SKILLS,
-  ADD_SKILL_TO_STATE
+  ADD_SKILLS_TO_STATE
 } from "./actionTypes";
 import { EMPLOYEES_API_URL, SKILLS_API_URL, SKILL_DATA_API_URL } from "../constants";
 import {mapSnakeToCamel, mapCamelToSnake} from "../utils/utils"
@@ -88,10 +88,9 @@ export const createSkills = (payload) => async dispatch => {
   try{
     payload.forEach(skill => mapCamelToSnake(skill));
     await axios.post(SKILLS_API_URL, payload);
-    payload.forEach(skill => mapSnakeToCamel(skill));
     dispatch( {
         type: CREATE_SKILLS,
-        payload: payload
+        payload: []
     })
   }
   catch(e){
@@ -104,8 +103,9 @@ export const createSkills = (payload) => async dispatch => {
 
 export const editEmployee = (employeeId, payload) => async dispatch => {
   try{
-    mapSnakeToCamel(payload);
+    mapCamelToSnake(payload);
     axios.put(EMPLOYEES_API_URL + employeeId, payload);
+    mapSnakeToCamel(payload);
     dispatch( {
         type: EDIT_EMPLOYEE,
         payload: payload
@@ -147,9 +147,9 @@ export const setSelectedEmployee = selectedEmployee => ({
   payload: selectedEmployee
 });
 
-export const addSkillToState = (payload) => async dispatch => {
+export const addSkillsToState = (payload) => async dispatch => {
   dispatch({
-    type: ADD_SKILL_TO_STATE,
+    type: ADD_SKILLS_TO_STATE,
     payload: payload,
   })
 };

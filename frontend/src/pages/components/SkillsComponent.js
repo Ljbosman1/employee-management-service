@@ -14,7 +14,7 @@ import {
 
 } from "reactstrap";
 import { getSkillsByEmployeeId } from "../../redux/selectors"
-import { getSkillDataFromApi, addSkillToState } from "../../redux/actions";
+import { addSkillsToState } from "../../redux/actions";
 
 class SkillsComponent extends React.Component {
     state = {
@@ -23,29 +23,73 @@ class SkillsComponent extends React.Component {
         skillData: {}
     };
     
-    addSkillToState() {
-        this.props.addSkillToState(
-            this.props.selectedEmployee.employeeId,
-            "",
-            this.props.skillData.years_experience[0],
-            this.props.skillData.seniority_rating[0],
-        );
+    addSkillToState = (event) => {
+        event.preventDefault()
+        this.setState(
+            {
+                skills: [...this.state.skills].concat(
+                    [
+                        {
+                            employeeId: this.state.employeeId,
+                            name: "Placeholder",
+                            yearsExperience: "1",
+                            seniorityRating: "Beginner"
+                        }
+                    ]
+                )
+            }, () => {
+                this.props.addSkillsToState(this.state.skills)
+            }
+        )
     }
     
     componentDidMount() {
-        this.setState({ employeeId: this.props.selectedEmployee.employeeId });
+        this.setState(
+            { 
+                employeeId: this.props.selectedEmployee.employeeId,
+                skills: this.props.skills
+            }
+        );
     }
 
-    editSkill = e => {
-        e.preventDefault();
-        console.log(e.target.parentElement.key);
+    editSkill = (index, event, field) => {
+        event.preventDefault();
+        var editedSkills = [...this.state.skills]
+        if (field === "name") {
+            editedSkills[index][field] = event.target.value
+        } else {
+            editedSkills[index][field] = event.target.innerText
+        }
+        
+        this.setState(
+            { 
+                skills: editedSkills
+            },
+            () => {
+                this.props.addSkillsToState(this.state.skills)
+            }
+        );
     };
+
+    deleteSkill = (index, event) => {
+        event.preventDefault();
+        var editedSkills = [...this.state.skills]
+        editedSkills.splice(index);
+        this.setState(
+            { 
+                skills: editedSkills
+            },
+            () => {
+                this.props.addSkillsToState(this.state.skills)
+            }
+        );
+    };
+
     defaultIfEmpty = value => {
         return value === "" ? "" : value;
-    }
+    };
 
     render() {
-        const skills = this.props.skills;
         const skillData = this.props.skillData
         return (
             <Container>
@@ -57,68 +101,68 @@ class SkillsComponent extends React.Component {
                     <Col></Col>
                 </Row>
                 {   
-                skills && skills.length?  (
-                    skills.map((skill, index) => (
-                        <Row key={index}>
-                            <Col cols="Auto" key={index + "_name"}>
-                                <Input
-                                    type="text"
-                                    name="skillName"
-                                    onChange={this.editSkill}
-                                    required
-                                    value={this.defaultIfEmpty(skill.name)}
-                                />
-                            </Col>
-                            <Col key={index + "_exp"}>
-                                <UncontrolledDropdown>
-                                    <DropdownToggle
-                                        caret
-                                        color="dark"
-                                    >
-                                        Experience
-                                    </DropdownToggle>
-                                    <DropdownMenu dark required>
-                                        <DropdownItem divider />
-                                        {skillData.experience_levels.map(exp =>
-                                            <DropdownItem key={exp}>
-                                                {exp}
-                                            </DropdownItem>
-                                        )}
-                                    </DropdownMenu>
-                                </UncontrolledDropdown>
-                            </Col>
-                            <Col key={index + "_level"}>
-                                <UncontrolledDropdown>
-                                    <DropdownToggle
-                                        caret
-                                        color="dark"
-                                    >
-                                        Level
-                                    </DropdownToggle>
-                                    <DropdownMenu dark required>
-                                        <DropdownItem divider />
-                                        {skillData.seniority_levels.map(rating =>
-                                            <DropdownItem onClick={this.editSkill} key={rating}>
-                                                {rating}
-                                            </DropdownItem>
-                                        )}
-                                    </DropdownMenu>
-                                </UncontrolledDropdown>
-                            </Col>
-                            <Col><Button><i className="bi bi-trash">Delete</i></Button></Col>
-                        </Row>
-                    ))
-                ) : (<div></div>)
+                    this.state.skills.length?  (
+                        this.state.skills.map((skill, index) => (
+                            <Row key={index}>
+                                <Col cols="Auto" key={index + "_name"}>
+                                    <Input
+                                        type="text"
+                                        name="skillName"
+                                        onChange={event=> this.editSkill(index, event, "name")}
+                                        required
+                                        value={skill.name}
+                                    />
+                                </Col>
+                                <Col key={index + "_exp"}>
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle
+                                            caret
+                                            color="dark"
+                                        >
+                                            {skill.yearsExperience}
+                                        </DropdownToggle>
+                                        <DropdownMenu dark required>
+                                            <DropdownItem divider />
+                                            {skillData.experienceLevels.map(exp =>
+                                                <DropdownItem onClick={event=> this.editSkill(index, event, "yearsExperience")} key={exp}>
+                                                    {exp}
+                                                </DropdownItem>
+                                            )}
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </Col>
+                                <Col key={index + "_level"}>
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle
+                                            caret
+                                            color="dark"
+                                        >
+                                            {skill.seniorityRating}
+                                        </DropdownToggle>
+                                        <DropdownMenu dark required>
+                                            <DropdownItem divider />
+                                            {skillData.seniorityLevels.map(rating =>
+                                                <DropdownItem onClick={event=> this.editSkill(index, event, "seniorityRating")} key={rating}>
+                                                    {rating}
+                                                </DropdownItem>
+                                            )}
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </Col>
+                                <Col><Button onClick={event => this.deleteSkill(index, event)}><i className="bi bi-trash">Delete</i></Button></Col>
+                            </Row>
+                        ))
+                    ) : (<div></div>)
                 }
                 <Button
                     color="primary"
-                    className="rounded-pill"
-                    onClick={this.addSkillToState}
+                    className="rounded-pill p-3"
+                    onClick={event => this.addSkillToState(event)}
                     style={{ minWidth: "200px" }}
                 >
                     Add Skill
                 </Button>
-            </Container>
+        </Container>
             
         )
     }
@@ -130,5 +174,5 @@ const mapStateToProps = state => {
   };
   export default connect(
     mapStateToProps,
-    { getSkillDataFromApi, addSkillToState }
+    { addSkillsToState }
   )(SkillsComponent);

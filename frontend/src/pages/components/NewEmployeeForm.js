@@ -3,7 +3,7 @@ import React from "react";
 import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 import { connect } from "react-redux";
 
-import { getEmployeesFromApi, createEmployee, editEmployee } from "../../redux/actions";
+import { getEmployeesFromApi, createEmployee, editEmployee, createSkills } from "../../redux/actions";
 
 import {DEFAULT_EMPLOYEE} from "../../constants";
 
@@ -29,7 +29,7 @@ class NewEmployeeForm extends React.Component {
       const selectedEmployee = this.props.selectedEmployee;
       if (selectedEmployee) {
         this.setState(
-          selectedEmployee
+          {formData: selectedEmployee}
         );
     }
     };
@@ -45,6 +45,7 @@ class NewEmployeeForm extends React.Component {
     createEmployee = e => {
       e.preventDefault();
       this.props.createEmployee(this.state).then(() => {
+        this.props.createSkills(this.props.stateSkills);
         this.props.toggle()
       });
     }
@@ -52,7 +53,8 @@ class NewEmployeeForm extends React.Component {
     editEmployee = e => {
       e.preventDefault();
       const selectedEmployee = this.props.selectedEmployee;
-      this.props.editEmployee(selectedEmployee.employeeId, this.state).then(() => {
+      this.props.editEmployee(selectedEmployee.employeeId, this.state.formData).then(() => {
+        this.props.createSkills(this.props.stateSkills);
         this.props.toggle()
       });
       
@@ -95,7 +97,7 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="contactNumber"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.contactNumber)}
+              value={this.defaultIfEmpty(this.state.formData.contactNumber)}
               required
               invalid={this.state.validations.contactNumber}
             />
@@ -106,7 +108,7 @@ class NewEmployeeForm extends React.Component {
               type="email"
               name="email"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.email)}
+              value={this.defaultIfEmpty(this.state.formData.email)}
               required
               invalid={this.state.validations.email}
             />
@@ -162,7 +164,7 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="country"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.country)}
+              value={this.defaultIfEmpty(this.state.formData.country)}
               required
               invalid={this.state.validations.country}
             />
@@ -179,9 +181,10 @@ const mapStateToProps = state => {
   if (state.selectedEmployee) {
     selectedEmployee = (Object.keys(state.selectedEmployee).length) === 0? DEFAULT_EMPLOYEE: state.selectedEmployee;
   }
-  return  { selectedEmployee };
+  const stateSkills  = [...state.stateSkills];
+  return  { selectedEmployee,  stateSkills };
 };
 export default connect(
   mapStateToProps,
-  { getEmployeesFromApi, createEmployee, editEmployee }
+  { getEmployeesFromApi, createEmployee, editEmployee, createSkills }
 )(NewEmployeeForm);

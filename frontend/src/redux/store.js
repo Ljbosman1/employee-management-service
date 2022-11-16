@@ -3,4 +3,8 @@ import rootReducer from "./reducers";
 
 export default configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    immutableCheck: false,
+    serializableCheck: false,
+})
 })

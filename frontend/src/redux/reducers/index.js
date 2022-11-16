@@ -9,7 +9,7 @@ import {
   GET_SKILLS,
   GET_SKILL_DATA,
   CREATE_SKILLS,
-  ADD_SKILL_TO_STATE
+  ADD_SKILLS_TO_STATE
 } from "../actionTypes";
 
 const initialState = {
@@ -17,7 +17,8 @@ const initialState = {
   searchTerm: "",
   selectedEmployee: {},
   skillData: {},
-  skills: []
+  skills: [],
+  stateSkills: [],
 };
 
 export default function(state = initialState, action) {
@@ -56,13 +57,13 @@ export default function(state = initialState, action) {
     case CREATE_SKILLS: {
       return {
         ...state,
-        skills: [...state.skills].concat(action.payload)
+        stateSkills: []
       };
     }
-    case ADD_SKILL_TO_STATE: {
+    case ADD_SKILLS_TO_STATE: {
       return {
         ...state,
-        skills: [...state.skills].concat(action.payload)
+        stateSkills: action.payload
       };
     }
     case EDIT_EMPLOYEE: {
