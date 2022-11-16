@@ -10,7 +10,20 @@ import {DEFAULT_EMPLOYEE} from "../../constants";
 import SkillsComponent from "./SkillsComponent";
 
 class NewEmployeeForm extends React.Component {
-    state = DEFAULT_EMPLOYEE;
+    state = {
+      formData: DEFAULT_EMPLOYEE,
+      validations: {
+        firstName: false,
+        lastName: false,
+        contactNumber: false,
+        email: false,
+        dateOfBirth: false,
+        streetName: false,
+        city: false,
+        postalCode: false,
+        country: false
+      }
+    };
 
     componentDidMount () {
       const selectedEmployee = this.props.selectedEmployee;
@@ -39,7 +52,7 @@ class NewEmployeeForm extends React.Component {
     editEmployee = e => {
       e.preventDefault();
       const selectedEmployee = this.props.selectedEmployee;
-      this.props.editEmployee(selectedEmployee.employee_id, this.state).then(() => {
+      this.props.editEmployee(selectedEmployee.employeeId, this.state).then(() => {
         this.props.toggle()
       });
       
@@ -52,36 +65,39 @@ class NewEmployeeForm extends React.Component {
     render() {
       const selectedEmployee = this.props.selectedEmployee
       return (
-        <Form onSubmit={ selectedEmployee.employee_id ? this.editEmployee : this.createEmployee}>
+        <Form onSubmit={ selectedEmployee.employeeId ? this.editEmployee : this.createEmployee}>
           <h5><u>Personal Details</u></h5>
           <FormGroup>
-            <Label for="first_name">First Name:</Label>
+            <Label for="firstName">First Name:</Label>
             <Input
               type="text"
-              name="first_name"
+              name="firstName"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.first_name)}
+              value={this.defaultIfEmpty(this.state.formData.firstName)}
               required
+              invalid={this.state.validations.firstName}
             />
           </FormGroup>
           <FormGroup>
-            <Label for="last_name">Last Name:</Label>
+            <Label for="lastName">Last Name:</Label>
             <Input
               type="text"
-              name="last_name"
+              name="lastName"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.last_name)}
+              value={this.defaultIfEmpty(this.state.formData.lastName)}
               required
+              invalid={this.state.validations.lastName}
             />
           </FormGroup>
           <FormGroup>
-            <Label for="contact_number">Contact Number:</Label>
+            <Label for="contactNumber">Contact Number:</Label>
             <Input
               type="text"
-              name="contact_number"
+              name="contactNumber"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.contact_number)}
+              value={this.defaultIfEmpty(this.state.contactNumber)}
               required
+              invalid={this.state.validations.contactNumber}
             />
           </FormGroup>
           <FormGroup>
@@ -92,27 +108,30 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.defaultIfEmpty(this.state.email)}
               required
+              invalid={this.state.validations.email}
             />
           </FormGroup>
           <FormGroup>
-            <Label for="date_of_birth">Date of Birth:</Label>
+            <Label for="dateOfBirth">Date of Birth:</Label>
             <Input
-              name="date_of_birth"
+              name="dateOfBirth"
               type="date"
               onChange={this.onChange}
-              value={this.state.date_of_birth}
+              value={this.state.formData.dateOfBirth}
               required
+              invalid={this.state.validations.dateOfBirth}
             />
           </FormGroup>
           <h5><u>Address Info</u></h5>
           <FormGroup>
-            <Label for="street_name">Street Address:</Label>
+            <Label for="streetName">Street Address:</Label>
             <Input
               type="text"
-              name="street_name"
+              name="streetName"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.street_name)}
+              value={this.defaultIfEmpty(this.state.formData.streetName)}
               required
+              invalid={this.state.validations.streetName}
             />
           </FormGroup>
           <FormGroup>
@@ -121,18 +140,20 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="city"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.city)}
+              value={this.defaultIfEmpty(this.state.formData.city)}
               required
+              invalid={this.state.validations.city}
             />
           </FormGroup>
           <FormGroup>
-            <Label for="postal_code">Postal Code:</Label>
+            <Label for="postalCode">Postal Code:</Label>
             <Input
               type="number"
-              name="postal_code"
+              name="postalCode"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.postal_code)}
+              value={this.defaultIfEmpty(this.state.formData.postalCode)}
               required
+              invalid={this.state.validations.postalCode}
             />
           </FormGroup>
           <FormGroup>
@@ -143,6 +164,7 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.defaultIfEmpty(this.state.country)}
               required
+              invalid={this.state.validations.country}
             />
           </FormGroup>
           <SkillsComponent />

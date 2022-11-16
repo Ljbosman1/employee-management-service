@@ -12,12 +12,14 @@ import {
   ADD_SKILL_TO_STATE
 } from "./actionTypes";
 import { EMPLOYEES_API_URL, SKILLS_API_URL, SKILL_DATA_API_URL } from "../constants";
+import {mapSnakeToCamel, mapCamelToSnake} from "../utils/utils"
 
 import axios from 'axios'
 
 export const getEmployeesFromApi = () => async dispatch => {
   try{
     const res = await axios.get(EMPLOYEES_API_URL);
+    res.data.forEach(employee => mapSnakeToCamel(employee));
     dispatch( {
         type: GET_EMPLOYEES_FROM_API,
         payload: res.data
@@ -34,6 +36,7 @@ export const getEmployeesFromApi = () => async dispatch => {
 export const getSkillsFromApi = () => async dispatch => {
   try{
     const res = await axios.get(SKILLS_API_URL);
+    res.data.forEach(skill => mapSnakeToCamel(skill));
     dispatch( {
         type: GET_SKILLS,
         payload: res.data
@@ -50,6 +53,7 @@ export const getSkillsFromApi = () => async dispatch => {
 export const getSkillDataFromApi = () => async dispatch => {
   try{
     const res = await axios.get(SKILL_DATA_API_URL);
+    mapSnakeToCamel(res.data);
     dispatch( {
         type: GET_SKILL_DATA,
         payload: res.data
@@ -65,6 +69,7 @@ export const getSkillDataFromApi = () => async dispatch => {
 
 export const createEmployee = (payload) => async dispatch => {
   try{
+    mapSnakeToCamel(payload);
     const res = await axios.post(EMPLOYEES_API_URL, payload);
     dispatch( {
         type: CREATE_EMPLOYEE,
@@ -81,7 +86,9 @@ export const createEmployee = (payload) => async dispatch => {
 
 export const createSkills = (payload) => async dispatch => {
   try{
+    payload.forEach(skill => mapCamelToSnake(skill));
     await axios.post(SKILLS_API_URL, payload);
+    payload.forEach(skill => mapSnakeToCamel(skill));
     dispatch( {
         type: CREATE_SKILLS,
         payload: payload
@@ -97,6 +104,7 @@ export const createSkills = (payload) => async dispatch => {
 
 export const editEmployee = (employeeId, payload) => async dispatch => {
   try{
+    mapSnakeToCamel(payload);
     axios.put(EMPLOYEES_API_URL + employeeId, payload);
     dispatch( {
         type: EDIT_EMPLOYEE,
@@ -139,15 +147,9 @@ export const setSelectedEmployee = selectedEmployee => ({
   payload: selectedEmployee
 });
 
-export const addSkillToState = (employeeId, name, experience, rating) => async dispatch => {
-  const skill = {
-    employee_id: employeeId,
-    name: name,
-    years_experience: experience,
-    seniority_rating: rating
-  }
+export const addSkillToState = (payload) => async dispatch => {
   dispatch({
     type: ADD_SKILL_TO_STATE,
-    payload: skill,
+    payload: payload,
   })
 };

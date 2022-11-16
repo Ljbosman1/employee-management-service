@@ -67,7 +67,7 @@ export default function(state = initialState, action) {
     }
     case EDIT_EMPLOYEE: {
       var tempArr = [...state.employees]
-      tempArr = tempArr.map(function(item) { return item.employee_id === action.payload.employee_id ? action.payload : item; });
+      tempArr = tempArr.map(function(item) { return item.employeeId === action.payload.employeeId ? action.payload : item; });
       
       return {
         ...state,
@@ -79,7 +79,7 @@ export default function(state = initialState, action) {
       var employees = [...state.employees]
       return {
         ...state,
-        employees: employees.filter(employee => employee.employee_id !== action.payload),
+        employees: employees.filter(employee => employee.employeeId !== action.payload),
         selectedEmployee: {}
       };
     }

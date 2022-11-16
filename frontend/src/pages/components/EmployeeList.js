@@ -48,15 +48,15 @@ class EmployeeList extends Component {
             </tr>
           ) : (
             this.props.employees.map(filteredEmployee => (
-              <tr key={filteredEmployee.employee_id}>
-                <td>{filteredEmployee.employee_id}</td>
-                <td>{filteredEmployee.first_name}</td>
-                <td>{filteredEmployee.last_name}</td>
-                <td>{filteredEmployee.contact_number}</td>
+              <tr key={filteredEmployee.employeeId}>
+                <td>{filteredEmployee.employeeId}</td>
+                <td>{filteredEmployee.firstName}</td>
+                <td>{filteredEmployee.lastName}</td>
+                <td>{filteredEmployee.contactNumber}</td>
                 <td>{filteredEmployee.email}</td>
                 <td align="center">
                   <NewEmployeeModal create={false} employeeDetails={filteredEmployee}/>
-                  <Button color="danger" onClick={() => this.deleteEmployee(filteredEmployee.employee_id)}>
+                  <Button color="danger" onClick={() => this.deleteEmployee(filteredEmployee.employeeId)}>
                     Remove
                   </Button>
                 </td>
