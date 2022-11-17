@@ -19,10 +19,11 @@ import axios from 'axios'
 export const getEmployeesFromApi = () => async dispatch => {
   try{
     const res = await axios.get(EMPLOYEES_API_URL);
-    res.data.forEach(employee => mapSnakeToCamel(employee));
+    var arr = [...res.data]
+    arr.forEach(employee => mapSnakeToCamel(employee));
     dispatch( {
         type: GET_EMPLOYEES_FROM_API,
-        payload: res.data
+        payload: arr
     })
   }
   catch(e){
@@ -36,10 +37,12 @@ export const getEmployeesFromApi = () => async dispatch => {
 export const getSkillsFromApi = () => async dispatch => {
   try{
     const res = await axios.get(SKILLS_API_URL);
-    res.data.forEach(skill => mapSnakeToCamel(skill));
+    var arr = [...res.data]
+    arr.forEach(skill => mapSnakeToCamel(skill));
+
     dispatch( {
         type: GET_SKILLS,
-        payload: res.data
+        payload: arr
     })
   }
   catch(e){
@@ -53,10 +56,11 @@ export const getSkillsFromApi = () => async dispatch => {
 export const getSkillDataFromApi = () => async dispatch => {
   try{
     const res = await axios.get(SKILL_DATA_API_URL);
-    mapSnakeToCamel(res.data);
+    var obj = {...res.data}
+    mapSnakeToCamel(obj);
     dispatch( {
         type: GET_SKILL_DATA,
-        payload: res.data
+        payload: obj
     })
   }
   catch(e){
@@ -71,9 +75,11 @@ export const createEmployee = (payload) => async dispatch => {
   try{
     mapSnakeToCamel(payload);
     const res = await axios.post(EMPLOYEES_API_URL, payload);
+    var obj = {...res.data}
+    mapSnakeToCamel(obj);
     dispatch( {
         type: CREATE_EMPLOYEE,
-        payload: res.data
+        payload: obj
     })
   }
   catch(e){
@@ -103,9 +109,9 @@ export const createSkills = (payload) => async dispatch => {
 
 export const editEmployee = (employeeId, payload) => async dispatch => {
   try{
-    mapCamelToSnake(payload);
-    axios.put(EMPLOYEES_API_URL + employeeId, payload);
-    mapSnakeToCamel(payload);
+    var obj = {...payload}
+    mapCamelToSnake(obj);
+    axios.put(EMPLOYEES_API_URL + employeeId, obj);
     dispatch( {
         type: EDIT_EMPLOYEE,
         payload: payload

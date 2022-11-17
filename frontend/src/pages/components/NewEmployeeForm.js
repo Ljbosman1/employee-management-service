@@ -13,15 +13,15 @@ class NewEmployeeForm extends React.Component {
     state = {
       formData: DEFAULT_EMPLOYEE,
       validations: {
-        firstName: false,
-        lastName: false,
-        contactNumber: false,
-        email: false,
-        dateOfBirth: false,
-        streetName: false,
-        city: false,
-        postalCode: false,
-        country: false
+        firstName: true,
+        lastName: true,
+        contactNumber: true,
+        email: true,
+        dateOfBirth: true,
+        streetName: true,
+        city: true,
+        postalCode: true,
+        country: true
       }
     };
 
@@ -33,9 +33,30 @@ class NewEmployeeForm extends React.Component {
         );
     }
     };
+
+    validateForm() {
+      const form = {...this.state.formData}
+      var validations = {...this.state.validations}
+
+      var regName = /^[a-zA-Z]+$/;
+      // First name
+      if(!regName.test(form.firstName)){
+        validations.firstName = false
+      }
+      // Last name
+      if(!regName.test(form.lastName)){
+        validations.lastName = false
+      }
+      this.setState({ validations: validations }, () => {
+        console.log("NOT VALID")
+        return (Object.values(validations).filter(e => e === false).length > 0);
+      })
+    }
     
     onChange = e => {
-        this.setState({ [e.target.name]: e.target.value });
+      var form = {...this.state.formData}
+      form[e.target.name] =  e.target.value
+      this.setState({ formData: form});
     };
 
     resetState = () => {
@@ -52,12 +73,16 @@ class NewEmployeeForm extends React.Component {
 
     editEmployee = e => {
       e.preventDefault();
-      const selectedEmployee = this.props.selectedEmployee;
-      this.props.editEmployee(selectedEmployee.employeeId, this.state.formData).then(() => {
-        this.props.createSkills(this.props.stateSkills);
-        this.props.toggle()
-      });
-      
+      const valid = this.validateForm();
+      if (valid) {
+        const selectedEmployee = this.props.selectedEmployee;
+        this.props.editEmployee(selectedEmployee.employeeId, this.state.formData).then(() => {
+          this.props.createSkills(this.props.stateSkills);
+          this.props.toggle()
+        });
+      } else{
+        return valid
+      }
     };
 
     defaultIfEmpty = value => {
@@ -77,7 +102,7 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.defaultIfEmpty(this.state.formData.firstName)}
               required
-              invalid={this.state.validations.firstName}
+              invalid={!this.state.validations.firstName}
             />
           </FormGroup>
           <FormGroup>
@@ -88,7 +113,7 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.defaultIfEmpty(this.state.formData.lastName)}
               required
-              invalid={this.state.validations.lastName}
+              invalid={!this.state.validations.lastName}
             />
           </FormGroup>
           <FormGroup>
@@ -99,7 +124,7 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.defaultIfEmpty(this.state.formData.contactNumber)}
               required
-              invalid={this.state.validations.contactNumber}
+              invalid={!this.state.validations.contactNumber}
             />
           </FormGroup>
           <FormGroup>
@@ -110,7 +135,7 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.defaultIfEmpty(this.state.formData.email)}
               required
-              invalid={this.state.validations.email}
+              invalid={!this.state.validations.email}
             />
           </FormGroup>
           <FormGroup>
@@ -121,7 +146,7 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.state.formData.dateOfBirth}
               required
-              invalid={this.state.validations.dateOfBirth}
+              invalid={!this.state.validations.dateOfBirth}
             />
           </FormGroup>
           <h5><u>Address Info</u></h5>
@@ -133,7 +158,7 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.defaultIfEmpty(this.state.formData.streetName)}
               required
-              invalid={this.state.validations.streetName}
+              invalid={!this.state.validations.streetName}
             />
           </FormGroup>
           <FormGroup>
@@ -144,7 +169,7 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.defaultIfEmpty(this.state.formData.city)}
               required
-              invalid={this.state.validations.city}
+              invalid={!this.state.validations.city}
             />
           </FormGroup>
           <FormGroup>
@@ -155,7 +180,7 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.defaultIfEmpty(this.state.formData.postalCode)}
               required
-              invalid={this.state.validations.postalCode}
+              invalid={!this.state.validations.postalCode}
             />
           </FormGroup>
           <FormGroup>
@@ -166,7 +191,7 @@ class NewEmployeeForm extends React.Component {
               onChange={this.onChange}
               value={this.defaultIfEmpty(this.state.formData.country)}
               required
-              invalid={this.state.validations.country}
+              invalid={!this.state.validations.country}
             />
           </FormGroup>
           <SkillsComponent />

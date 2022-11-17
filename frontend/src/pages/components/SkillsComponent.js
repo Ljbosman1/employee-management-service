@@ -169,7 +169,10 @@ class SkillsComponent extends React.Component {
 }
 const mapStateToProps = state => {
     const { selectedEmployee, skillData } = state;
-    const skills = getSkillsByEmployeeId(state, selectedEmployee.employeeId);
+    var skills = []
+    if (selectedEmployee) {
+        skills = getSkillsByEmployeeId(state, selectedEmployee.employeeId);
+    }
     return { skills, selectedEmployee, skillData };
   };
   export default connect(
