@@ -15,8 +15,7 @@ import EmployeeList from "./components/EmployeeList";
 import NewEmployeeModal from "./components/NewEmployeeModal";
 
 import { connect } from "react-redux";
-import { editSearch, getEmployeesFromApi } from "../redux/actions";
-import { getEmployeeList } from "../redux/selectors";
+import { editSearch, getEmployeesFromApi, getSkillsFromApi, getSkillDataFromApi } from "../redux/actions";
 
 class Home extends Component {
   state = {
@@ -32,6 +31,8 @@ class Home extends Component {
     this.props.getEmployeesFromApi().then(() => {
       this.setState({ employees: this.props.employees });
     });
+    this.props.getSkillsFromApi();
+    this.props.getSkillDataFromApi();
     
   };
 
@@ -50,19 +51,19 @@ class Home extends Component {
     return (
       <Container style={{ marginTop: "20px" }}>
         <Row>
-          <Col>
-            <Navbar>
-                <div>
-                    <NavbarBrand href="/">Employees</NavbarBrand>
-                    <NavbarText>There are {!this.props.employees || this.props.employees.length <= 0 ? (0):(this.props.employees.length )} employees. </NavbarText>
-                </div>
+          <Navbar>
+              <Col>
+                  <NavbarBrand href="/">Employees</NavbarBrand>
+                  <NavbarText>There are {!this.props.employees || this.props.employees.length <= 0 ? (0):(this.props.employees.length )} employees. </NavbarText>
+              </Col>
+              <Col>
                 <Nav navbar>    
                     <NavItem>
                         <Input type="search" onChange={e => this.editSearch(e.target.value)} value={this.state.searchTerm}/>
                     </NavItem>
                 </Nav>
-            </Navbar>
-          </Col>
+              </Col>
+          </Navbar>
         </Row>
         <Row>
           <Col>
@@ -83,5 +84,5 @@ const mapStateToProps  = (state) => {
 };
 export default connect(
   mapStateToProps,
-  {  editSearch, getEmployeesFromApi, getEmployeeList }
+  {  editSearch, getEmployeesFromApi, getSkillsFromApi, getSkillDataFromApi}
 )(Home);

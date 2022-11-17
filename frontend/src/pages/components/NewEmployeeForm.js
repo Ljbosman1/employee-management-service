@@ -1,46 +1,142 @@
 import React from "react";
-
-import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 import { connect } from "react-redux";
+import { Button, Form, FormGroup, Input, Label, FormFeedback } from "reactstrap";
 
-import { getEmployeesFromApi, createEmployee, editEmployee } from "../../redux/actions";
-
-import {DEFAULT_EMPLOYEE} from "../../constants";
+import { getEmployeesFromApi, createEmployee, editEmployee, createSkills } from "../../redux/actions";
+import {
+  DEFAULT_EMPLOYEE,
+  COUNTRY_LIST,
+  NAME_REGEX,
+  EMAIL_REGEX,
+  CONTACT_NUMBER_REGEX,
+  ADDRESS_REGEX
+} from "../../constants";
+import SkillsComponent from "./SkillsComponent";
 
 class NewEmployeeForm extends React.Component {
-    state = DEFAULT_EMPLOYEE;
+    state = {
+      formData: DEFAULT_EMPLOYEE,
+      validations: {
+        firstName: true,
+        lastName: true,
+        contactNumber: true,
+        email: true,
+        dateOfBirth: true,
+        streetName: true,
+        city: true,
+        postalCode: true,
+        country: true
+      }
+    };
 
     componentDidMount () {
       const selectedEmployee = this.props.selectedEmployee;
       if (selectedEmployee) {
         this.setState(
-          selectedEmployee
+          {formData: selectedEmployee}
         );
     }
     };
+
+    validateForm = e => {
+      e.preventDefault();
+      const form = {...this.state.formData}
+      var validations = {...this.state.validations}
+      
+
+      // First name
+      if(NAME_REGEX.test(form.firstName) && form.firstName[0].toUpperCase() === form.firstName[0]) {
+        validations.firstName = true
+      } else {
+        validations.firstName = false
+      }
+      // Last name
+      if(NAME_REGEX.test(form.lastName) && form.lastName[0].toUpperCase() === form.lastName[0]) {
+        validations.lastName = true
+      } else {
+        validations.lastName = false
+      }
+      // Email
+      if(!EMAIL_REGEX.test(form.email)){
+        validations.email = false
+      } else {
+        validations.email = true
+      }
+      // Contact Number
+      if(!CONTACT_NUMBER_REGEX.test(form.contactNumber)){
+        validations.contactNumber = false
+      } else {
+        validations.contactNumber = true
+      }
+      // Date of birth
+      if (new Date().getFullYear() - form.dateOfBirth.split('-')[0] < 18) {
+        validations.dateOfBirth = false
+      } else {
+        validations.dateOfBirth = true
+      }
+      // Postal Code
+      if(form.postalCode <= 0){
+        validations.postalCode = false
+      } else {
+        validations.postalCode = true
+      }
+      // Street
+      if (!ADDRESS_REGEX.test(form.streetName)) {
+        validations.streetName = false
+      } else {
+        validations.streetName = true
+      }
+      // Street
+      if (!ADDRESS_REGEX.test(form.city)) {
+        validations.city = false
+      } else {
+        validations.city = true
+      }
+      // Country
+      if (COUNTRY_LIST.filter(country => country === form.country).length === 0) {
+        validations.country = false
+      } else {
+        validations.country = true
+      }
+
+
+      this.setState({ validations: validations }, () => {
+        const valid = Object.values(validations).filter(e => e === false).length === 0
+        if (!valid) {
+          return false;
+        }
+
+        if (this.props.selectedEmployee.employeeId) {
+          this.editEmployee();
+        } else {
+          this.createEmployee();
+        }
+      })
+    }
     
     onChange = e => {
-        this.setState({ [e.target.name]: e.target.value });
+      var form = {...this.state.formData}
+      form[e.target.name] =  e.target.value
+      this.setState({ formData: form});
     };
 
     resetState = () => {
       this.props.getEmployeesFromApi();
     }
 
-    createEmployee = e => {
-      e.preventDefault();
+    createEmployee = () => {
       this.props.createEmployee(this.state).then(() => {
+        this.props.createSkills(this.props.stateSkills);
         this.props.toggle()
       });
     }
 
-    editEmployee = e => {
-      e.preventDefault();
+    editEmployee = () => {
       const selectedEmployee = this.props.selectedEmployee;
-      this.props.editEmployee(selectedEmployee.employee_id, this.state).then(() => {
+      this.props.editEmployee(selectedEmployee.employeeId, this.state.formData).then(() => {
+        this.props.createSkills(this.props.stateSkills);
         this.props.toggle()
       });
-      
     };
 
     defaultIfEmpty = value => {
@@ -48,38 +144,50 @@ class NewEmployeeForm extends React.Component {
   };
     
     render() {
-      const selectedEmployee = this.props.selectedEmployee
       return (
-        <Form onSubmit={ selectedEmployee.employee_id ? this.editEmployee : this.createEmployee}>
+        <Form onSubmit={ this.validateForm }>
+          <h5><u>Personal Details</u></h5>
           <FormGroup>
-            <Label for="first_name">First Name:</Label>
+            <Label for="firstName">First Name:</Label>
             <Input
               type="text"
-              name="first_name"
+              name="firstName"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.first_name)}
+              value={this.defaultIfEmpty(this.state.formData.firstName)}
               required
+              invalid={!this.state.validations.firstName}
             />
+            <FormFeedback>
+              Invalid first name
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
-            <Label for="last_name">Last Name:</Label>
+            <Label for="lastName">Last Name:</Label>
             <Input
               type="text"
-              name="last_name"
+              name="lastName"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.last_name)}
+              value={this.defaultIfEmpty(this.state.formData.lastName)}
               required
+              invalid={!this.state.validations.lastName}
             />
+            <FormFeedback>
+              Invalid last name
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
-            <Label for="contact_number">Contact Number:</Label>
+            <Label for="contactNumber">Contact Number:</Label>
             <Input
               type="text"
-              name="contact_number"
+              name="contactNumber"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.contact_number)}
+              value={this.defaultIfEmpty(this.state.formData.contactNumber)}
               required
+              invalid={!this.state.validations.contactNumber}
             />
+            <FormFeedback>
+              Invalid contact number
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="email">Email Address:</Label>
@@ -87,29 +195,42 @@ class NewEmployeeForm extends React.Component {
               type="email"
               name="email"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.email)}
+              value={this.defaultIfEmpty(this.state.formData.email)}
               required
+              invalid={!this.state.validations.email}
             />
+            <FormFeedback>
+              Invalid email address
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
-            <Label for="date_of_birth">Date of Birth:</Label>
+            <Label for="dateOfBirth">Date of Birth:</Label>
             <Input
-              name="date_of_birth"
+              name="dateOfBirth"
               type="date"
               onChange={this.onChange}
-              value={this.state.date_of_birth}
+              value={this.state.formData.dateOfBirth}
               required
+              invalid={!this.state.validations.dateOfBirth}
             />
+            <FormFeedback>
+              Invalid Date of Birth. Must be older than 18
+            </FormFeedback>
           </FormGroup>
+          <h5><u>Address Info</u></h5>
           <FormGroup>
-            <Label for="street_name">Street Address:</Label>
+            <Label for="streetName">Street Address:</Label>
             <Input
               type="text"
-              name="street_name"
+              name="streetName"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.street_name)}
+              value={this.defaultIfEmpty(this.state.formData.streetName)}
               required
+              invalid={!this.state.validations.streetName}
             />
+            <FormFeedback>
+              Invalid street name
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="city">City:</Label>
@@ -117,19 +238,27 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="city"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.city)}
+              value={this.defaultIfEmpty(this.state.formData.city)}
               required
+              invalid={!this.state.validations.city}
             />
+            <FormFeedback>
+              Invalid city name
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
-            <Label for="postal_code">Postal Code:</Label>
+            <Label for="postalCode">Postal Code:</Label>
             <Input
               type="number"
-              name="postal_code"
+              name="postalCode"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.postal_code)}
+              value={this.defaultIfEmpty(this.state.formData.postalCode)}
               required
+              invalid={!this.state.validations.postalCode}
             />
+            <FormFeedback>
+              Invalid postal code
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="country">Country:</Label>
@@ -137,10 +266,18 @@ class NewEmployeeForm extends React.Component {
               type="text"
               name="country"
               onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.country)}
+              value={this.defaultIfEmpty(this.state.formData.country)}
               required
+              invalid={!this.state.validations.country}
             />
+            <FormFeedback>
+              Invalid country
+            </FormFeedback>
           </FormGroup>
+          {
+          this.props.selectedEmployee.employeeId? (<SkillsComponent />) : (<div></div>)
+          }
+          
           <Button>Save</Button>
         </Form>
       );
@@ -152,9 +289,10 @@ const mapStateToProps = state => {
   if (state.selectedEmployee) {
     selectedEmployee = (Object.keys(state.selectedEmployee).length) === 0? DEFAULT_EMPLOYEE: state.selectedEmployee;
   }
-  return  { selectedEmployee };
+  const stateSkills  = [...state.stateSkills];
+  return  { selectedEmployee,  stateSkills };
 };
 export default connect(
   mapStateToProps,
-  { getEmployeesFromApi, createEmployee, editEmployee }
+  { getEmployeesFromApi, createEmployee, editEmployee, createSkills }
 )(NewEmployeeForm);
