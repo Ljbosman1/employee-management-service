@@ -60,13 +60,12 @@ class SkillsComponent extends React.Component {
         } else {
             editedSkills[index][field] = event.target.innerText
         }
-        
         this.setState(
             { 
                 skills: editedSkills
             },
             () => {
-                this.props.addSkillsToState(this.state.skills)
+                this.props.addSkillsToState(editedSkills)
             }
         );
     };

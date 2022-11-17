@@ -1,12 +1,16 @@
 import React from "react";
-
-import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 import { connect } from "react-redux";
+import { Button, Form, FormGroup, Input, Label, FormFeedback } from "reactstrap";
 
 import { getEmployeesFromApi, createEmployee, editEmployee, createSkills } from "../../redux/actions";
-
-import {DEFAULT_EMPLOYEE} from "../../constants";
-
+import {
+  DEFAULT_EMPLOYEE,
+  COUNTRY_LIST,
+  NAME_REGEX,
+  EMAIL_REGEX,
+  CONTACT_NUMBER_REGEX,
+  ADDRESS_REGEX
+} from "../../constants";
 import SkillsComponent from "./SkillsComponent";
 
 class NewEmployeeForm extends React.Component {
@@ -34,22 +38,79 @@ class NewEmployeeForm extends React.Component {
     }
     };
 
-    validateForm() {
+    validateForm = e => {
+      e.preventDefault();
       const form = {...this.state.formData}
       var validations = {...this.state.validations}
+      
 
-      var regName = /^[a-zA-Z]+$/;
       // First name
-      if(!regName.test(form.firstName)){
+      if(NAME_REGEX.test(form.firstName) && form.firstName[0].toUpperCase() === form.firstName[0]) {
+        validations.firstName = true
+      } else {
         validations.firstName = false
       }
       // Last name
-      if(!regName.test(form.lastName)){
+      if(NAME_REGEX.test(form.lastName) && form.lastName[0].toUpperCase() === form.lastName[0]) {
+        validations.lastName = true
+      } else {
         validations.lastName = false
       }
+      // Email
+      if(!EMAIL_REGEX.test(form.email)){
+        validations.email = false
+      } else {
+        validations.email = true
+      }
+      // Contact Number
+      if(!CONTACT_NUMBER_REGEX.test(form.contactNumber)){
+        validations.contactNumber = false
+      } else {
+        validations.contactNumber = true
+      }
+      // Date of birth
+      if (new Date().getFullYear() - form.dateOfBirth.split('-')[0] < 18) {
+        validations.dateOfBirth = false
+      } else {
+        validations.dateOfBirth = true
+      }
+      // Postal Code
+      if(form.postalCode <= 0){
+        validations.postalCode = false
+      } else {
+        validations.postalCode = true
+      }
+      // Street
+      if (!ADDRESS_REGEX.test(form.streetName)) {
+        validations.streetName = false
+      } else {
+        validations.streetName = true
+      }
+      // Street
+      if (!ADDRESS_REGEX.test(form.city)) {
+        validations.city = false
+      } else {
+        validations.city = true
+      }
+      // Country
+      if (COUNTRY_LIST.filter(country => country === form.country).length === 0) {
+        validations.country = false
+      } else {
+        validations.country = true
+      }
+
+
       this.setState({ validations: validations }, () => {
-        console.log("NOT VALID")
-        return (Object.values(validations).filter(e => e === false).length > 0);
+        const valid = Object.values(validations).filter(e => e === false).length === 0
+        if (!valid) {
+          return false;
+        }
+
+        if (this.props.selectedEmployee.employeeId) {
+          this.editEmployee();
+        } else {
+          this.createEmployee();
+        }
       })
     }
     
@@ -63,26 +124,19 @@ class NewEmployeeForm extends React.Component {
       this.props.getEmployeesFromApi();
     }
 
-    createEmployee = e => {
-      e.preventDefault();
+    createEmployee = () => {
       this.props.createEmployee(this.state).then(() => {
         this.props.createSkills(this.props.stateSkills);
         this.props.toggle()
       });
     }
 
-    editEmployee = e => {
-      e.preventDefault();
-      const valid = this.validateForm();
-      if (valid) {
-        const selectedEmployee = this.props.selectedEmployee;
-        this.props.editEmployee(selectedEmployee.employeeId, this.state.formData).then(() => {
-          this.props.createSkills(this.props.stateSkills);
-          this.props.toggle()
-        });
-      } else{
-        return valid
-      }
+    editEmployee = () => {
+      const selectedEmployee = this.props.selectedEmployee;
+      this.props.editEmployee(selectedEmployee.employeeId, this.state.formData).then(() => {
+        this.props.createSkills(this.props.stateSkills);
+        this.props.toggle()
+      });
     };
 
     defaultIfEmpty = value => {
@@ -90,9 +144,8 @@ class NewEmployeeForm extends React.Component {
   };
     
     render() {
-      const selectedEmployee = this.props.selectedEmployee
       return (
-        <Form onSubmit={ selectedEmployee.employeeId ? this.editEmployee : this.createEmployee}>
+        <Form onSubmit={ this.validateForm }>
           <h5><u>Personal Details</u></h5>
           <FormGroup>
             <Label for="firstName">First Name:</Label>
@@ -104,6 +157,9 @@ class NewEmployeeForm extends React.Component {
               required
               invalid={!this.state.validations.firstName}
             />
+            <FormFeedback>
+              Invalid first name
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="lastName">Last Name:</Label>
@@ -115,6 +171,9 @@ class NewEmployeeForm extends React.Component {
               required
               invalid={!this.state.validations.lastName}
             />
+            <FormFeedback>
+              Invalid last name
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="contactNumber">Contact Number:</Label>
@@ -126,6 +185,9 @@ class NewEmployeeForm extends React.Component {
               required
               invalid={!this.state.validations.contactNumber}
             />
+            <FormFeedback>
+              Invalid contact number
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="email">Email Address:</Label>
@@ -137,6 +199,9 @@ class NewEmployeeForm extends React.Component {
               required
               invalid={!this.state.validations.email}
             />
+            <FormFeedback>
+              Invalid email address
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="dateOfBirth">Date of Birth:</Label>
@@ -148,6 +213,9 @@ class NewEmployeeForm extends React.Component {
               required
               invalid={!this.state.validations.dateOfBirth}
             />
+            <FormFeedback>
+              Invalid Date of Birth. Must be older than 18
+            </FormFeedback>
           </FormGroup>
           <h5><u>Address Info</u></h5>
           <FormGroup>
@@ -160,6 +228,9 @@ class NewEmployeeForm extends React.Component {
               required
               invalid={!this.state.validations.streetName}
             />
+            <FormFeedback>
+              Invalid street name
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="city">City:</Label>
@@ -171,6 +242,9 @@ class NewEmployeeForm extends React.Component {
               required
               invalid={!this.state.validations.city}
             />
+            <FormFeedback>
+              Invalid city name
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="postalCode">Postal Code:</Label>
@@ -182,6 +256,9 @@ class NewEmployeeForm extends React.Component {
               required
               invalid={!this.state.validations.postalCode}
             />
+            <FormFeedback>
+              Invalid postal code
+            </FormFeedback>
           </FormGroup>
           <FormGroup>
             <Label for="country">Country:</Label>
@@ -193,8 +270,14 @@ class NewEmployeeForm extends React.Component {
               required
               invalid={!this.state.validations.country}
             />
+            <FormFeedback>
+              Invalid country
+            </FormFeedback>
           </FormGroup>
-          <SkillsComponent />
+          {
+          this.props.selectedEmployee.employeeId? (<SkillsComponent />) : (<div></div>)
+          }
+          
           <Button>Save</Button>
         </Form>
       );

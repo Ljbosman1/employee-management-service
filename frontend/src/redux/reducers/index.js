@@ -56,8 +56,7 @@ export default function(state = initialState, action) {
     }
     case CREATE_SKILLS: {
       return {
-        ...state,
-        stateSkills: []
+        ...state
       };
     }
     case ADD_SKILLS_TO_STATE: {
@@ -69,7 +68,6 @@ export default function(state = initialState, action) {
     case EDIT_EMPLOYEE: {
       var tempArr = [...state.employees]
       tempArr = tempArr.map(function(item) { return item.employeeId === action.payload.employeeId ? action.payload : item; });
-      console.log(tempArr)
       return {
         ...state,
         employees: tempArr,
