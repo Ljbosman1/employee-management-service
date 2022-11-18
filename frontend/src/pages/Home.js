@@ -72,7 +72,7 @@ class Home extends Component {
         </Row>
         <Row>
           <Col>
-            <NewEmployeeModal create={true} />
+            <NewEmployeeModal create={true} modalKey={-2}/>
           </Col>
         </Row>
       </Container>

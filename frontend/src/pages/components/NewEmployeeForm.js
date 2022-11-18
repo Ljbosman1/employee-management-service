@@ -15,6 +15,7 @@ import SkillsComponent from "./SkillsComponent";
 
 class NewEmployeeForm extends React.Component {
     state = {
+      employeeId: null,
       formData: DEFAULT_EMPLOYEE,
       validations: {
         firstName: true,
@@ -30,10 +31,20 @@ class NewEmployeeForm extends React.Component {
     };
 
     componentDidMount () {
-      const selectedEmployee = this.props.selectedEmployee;
+      var storageEmployee = localStorage.getItem("storageEmployee");
+      var selectedEmployee = this.props.selectedEmployee;
+      if (storageEmployee) {
+        selectedEmployee = JSON.parse(storageEmployee)
+      } else if (selectedEmployee) {
+        localStorage.setItem("employeeId", selectedEmployee.employeeId)
+      }
       if (selectedEmployee) {
         this.setState(
-          {formData: selectedEmployee}
+          {formData: selectedEmployee, employeeId: selectedEmployee.employeeId}, 
+          () => {
+            localStorage.setItem("employeeId", this.state.employeeId)
+            localStorage.setItem("storageEmployee", JSON.stringify(this.state.formData))
+          }
         );
     }
     };
@@ -42,8 +53,6 @@ class NewEmployeeForm extends React.Component {
       e.preventDefault();
       const form = {...this.state.formData}
       var validations = {...this.state.validations}
-      
-
       // First name
       if(NAME_REGEX.test(form.firstName) && form.firstName[0].toUpperCase() === form.firstName[0]) {
         validations.firstName = true
@@ -106,7 +115,7 @@ class NewEmployeeForm extends React.Component {
           return false;
         }
 
-        if (this.props.selectedEmployee.employeeId) {
+        if (this.state.employeeId) {
           this.editEmployee();
         } else {
           this.createEmployee();
@@ -117,6 +126,7 @@ class NewEmployeeForm extends React.Component {
     onChange = e => {
       var form = {...this.state.formData}
       form[e.target.name] =  e.target.value
+      localStorage.setItem("storageEmployee", JSON.stringify(form))
       this.setState({ formData: form});
     };
 
@@ -132,8 +142,7 @@ class NewEmployeeForm extends React.Component {
     }
 
     editEmployee = () => {
-      const selectedEmployee = this.props.selectedEmployee;
-      this.props.editEmployee(selectedEmployee.employeeId, this.state.formData).then(() => {
+      this.props.editEmployee(this.state.employeeId, this.state.formData).then(() => {
         this.props.createSkills(this.props.stateSkills);
         this.props.toggle()
       });
@@ -275,7 +284,7 @@ class NewEmployeeForm extends React.Component {
             </FormFeedback>
           </FormGroup>
           {
-          this.props.selectedEmployee.employeeId? (<SkillsComponent />) : (<div></div>)
+          this.state.employeeId? (<SkillsComponent />) : (<div></div>)
           }
           
           <Button>Save</Button>
