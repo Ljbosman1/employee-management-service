@@ -2,6 +2,7 @@ import React, { Component, Fragment} from "react";
 import { Button, Modal, ModalHeader, ModalBody } from "reactstrap";
 import NewEmployeeForm from "./NewEmployeeForm";
 import { connect } from "react-redux";
+import { getState } from "../../redux/selectors"
 import { setSelectedEmployee } from "../../redux/actions";
 
 class NewEmployeeModal extends Component {
@@ -9,10 +10,26 @@ class NewEmployeeModal extends Component {
     modal: false
   };
 
+  componentDidMount() {
+    const storageModalStage = JSON.parse(localStorage.getItem("modalState"));
+    const modalKey = localStorage.getItem("modalKey")
+                    ? JSON.parse(localStorage.getItem("modalKey"))
+                    : -1
+    this.setState({
+      modal: (storageModalStage !== null && modalKey === this.props.modalKey)? storageModalStage : false
+    })
+  }
+
   toggle = () => {
     this.setState(previous => ({
       modal: !previous.modal
     }), () => {
+      localStorage.setItem("modalState", this.state.modal);
+      localStorage.setItem("modalKey", this.props.modalKey);
+      if (!this.state.modal) {
+        localStorage.removeItem("storageEmployee")
+        localStorage.removeItem("skills")
+      }
       this.props.setSelectedEmployee(this.state.modal? this.props.employeeDetails : {})
     });
   };
@@ -51,5 +68,5 @@ class NewEmployeeModal extends Component {
 
 export default connect(
   null,
-  { setSelectedEmployee }
+  { setSelectedEmployee, getState }
 )(NewEmployeeModal);

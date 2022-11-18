@@ -18,3 +18,5 @@ export const getEmployeesBySearchTerm = (store, state) => {
       )
     ) : allEmployees;
 };
+
+export const getState = (store) => store;

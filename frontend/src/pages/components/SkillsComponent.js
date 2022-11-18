@@ -23,6 +23,29 @@ class SkillsComponent extends React.Component {
         skillData: {}
     };
     
+    componentDidMount() {
+        var skills = [...this.props.skills]
+        var skillData = {...this.props.skillData}
+        if (localStorage.getItem("skills")) {
+            skills = JSON.parse(localStorage.getItem("skills"))
+        }
+        if (localStorage.getItem("SkillData")) {
+            skillData = JSON.parse(localStorage.getItem("skillData"))
+        }
+        this.setState(
+            { 
+                employeeId: this.props.selectedEmployee.employeeId,
+                skills: skills,
+                skillData: skillData
+            }, 
+            () => {
+                
+                localStorage.setItem("skills", JSON.stringify(this.state.skills));
+                localStorage.setItem("skillData", JSON.stringify(this.state.skillData));
+            }
+        );
+    }
+
     addSkillToState = (event) => {
         event.preventDefault()
         this.setState(
@@ -38,19 +61,12 @@ class SkillsComponent extends React.Component {
                     ]
                 )
             }, () => {
-                this.props.addSkillsToState(this.state.skills)
+                this.props.addSkillsToState(this.state.skills);
+                localStorage.setItem("skills", JSON.stringify(this.state.skills));
             }
         )
     }
     
-    componentDidMount() {
-        this.setState(
-            { 
-                employeeId: this.props.selectedEmployee.employeeId,
-                skills: this.props.skills
-            }
-        );
-    }
 
     editSkill = (index, event, field) => {
         event.preventDefault();
@@ -66,6 +82,7 @@ class SkillsComponent extends React.Component {
             },
             () => {
                 this.props.addSkillsToState(editedSkills)
+                localStorage.setItem("skills", JSON.stringify(this.state.skills));
             }
         );
     };
@@ -80,6 +97,7 @@ class SkillsComponent extends React.Component {
             },
             () => {
                 this.props.addSkillsToState(this.state.skills)
+                localStorage.setItem("skills", JSON.stringify(this.state.skills))
             }
         );
     };
@@ -89,7 +107,6 @@ class SkillsComponent extends React.Component {
     };
 
     render() {
-        const skillData = this.props.skillData
         return (
             <Container>
                 <h5><u>Skills</u></h5>
@@ -100,7 +117,7 @@ class SkillsComponent extends React.Component {
                     <Col></Col>
                 </Row>
                 {   
-                    this.state.skills.length?  (
+                    (this.state.skills && this.state.skills.length)?  (
                         this.state.skills.map((skill, index) => (
                             <Row key={index}>
                                 <Col cols="Auto" key={index + "_name"}>
@@ -122,11 +139,19 @@ class SkillsComponent extends React.Component {
                                         </DropdownToggle>
                                         <DropdownMenu dark required>
                                             <DropdownItem divider />
-                                            {skillData.experienceLevels.map(exp =>
-                                                <DropdownItem onClick={event=> this.editSkill(index, event, "yearsExperience")} key={exp}>
-                                                    {exp}
-                                                </DropdownItem>
-                                            )}
+                                            { 
+                                                (this.state.skillData)? (
+                                                    this.state.skillData.experienceLevels.map(exp =>
+                                                        <DropdownItem onClick={event=> this.editSkill(index, event, "yearsExperience")} key={exp}>
+                                                            {exp}
+                                                        </DropdownItem>
+                                                    )
+                                                ) : (
+                                                    <DropdownItem>
+                                                        Data
+                                                    </DropdownItem>
+                                                )
+                                            }
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
                                 </Col>
@@ -140,11 +165,17 @@ class SkillsComponent extends React.Component {
                                         </DropdownToggle>
                                         <DropdownMenu dark required>
                                             <DropdownItem divider />
-                                            {skillData.seniorityLevels.map(rating =>
-                                                <DropdownItem onClick={event=> this.editSkill(index, event, "seniorityRating")} key={rating}>
-                                                    {rating}
-                                                </DropdownItem>
-                                            )}
+                                            { (this.state.skillData)? (
+                                                this.state.skillData.seniorityLevels.map(rating =>
+                                                    <DropdownItem onClick={event=> this.editSkill(index, event, "seniorityRating")} key={rating}>
+                                                        {rating}
+                                                    </DropdownItem>
+                                                )) : (
+                                                    <DropdownItem>
+                                                        Data
+                                                    </DropdownItem>
+                                                )
+                                            }
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
                                 </Col>
