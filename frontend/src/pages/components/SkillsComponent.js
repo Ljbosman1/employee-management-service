@@ -55,8 +55,8 @@ class SkillsComponent extends React.Component {
                         {
                             employeeId: this.state.employeeId,
                             name: "Placeholder",
-                            yearsExperience: "1",
-                            seniorityRating: "Beginner"
+                            yearsExperience: this.state.skillData.experienceLevels[0],
+                            seniorityRating: this.state.skillData.seniorityLevels[0]
                         }
                     ]
                 )

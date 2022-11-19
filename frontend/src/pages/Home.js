@@ -7,7 +7,7 @@ import {
   Navbar,
   Nav,
   NavItem,
-  NavbarBrand,
+  // NavbarBrand,
   NavbarText
 } from "reactstrap";
 
@@ -49,30 +49,47 @@ class Home extends Component {
 
   render() {
     return (
-      <Container style={{ marginTop: "20px" }}>
+      <Container style={{ marginTop: "20px", backgroundColor: "#330030"}}>
         <Row>
-          <Navbar>
+          <Navbar 
+            className="my-2"
+            color="dark"
+            dark
+          >
               <Col>
-                  <NavbarBrand href="/">Employees</NavbarBrand>
-                  <NavbarText>There are {!this.props.employees || this.props.employees.length <= 0 ? (0):(this.props.employees.length )} employees. </NavbarText>
+                <Row>
+                  <NavbarText style={{color: "white"}}><h1>Employees</h1></NavbarText>
+                </Row>
+                <Row>
+                  <NavbarText style={{color: "white"}}>
+                    <h4>There are {
+                      !this.props.employees || this.props.employees.length <= 0 ?
+                      (0):(this.props.employees.length )} employees
+                    </h4>
+                    </NavbarText>
+                </Row>
               </Col>
               <Col>
                 <Nav navbar>    
                     <NavItem>
-                        <Input type="search" onChange={e => this.editSearch(e.target.value)} value={this.state.searchTerm}/>
+                        <Input 
+                          type="search" 
+                          onChange={e => this.editSearch(e.target.value)} 
+                          value={this.state.searchTerm} 
+                          placeholder="Search"
+                        />
                     </NavItem>
                 </Nav>
+              </Col>
+              <Col></Col>
+              <Col>
+                <NewEmployeeModal create={true} modalKey={-2}/>
               </Col>
           </Navbar>
         </Row>
         <Row>
           <Col>
             <EmployeeList />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <NewEmployeeModal create={true} modalKey={-2}/>
           </Col>
         </Row>
       </Container>

@@ -135,21 +135,23 @@ class NewEmployeeForm extends React.Component {
     }
 
     createEmployee = () => {
-      this.props.createEmployee(this.state).then(() => {
+      this.props.createEmployee(this.state.formData).then(() => {
         this.props.createSkills(this.props.stateSkills);
         this.props.toggle()
       });
     }
 
     editEmployee = () => {
-      this.props.editEmployee(this.state.employeeId, this.state.formData).then(() => {
+      var formData = {...this.state.formData};
+      delete formData['employeeId'];
+      this.props.editEmployee(this.state.employeeId, formData).then(() => {
         this.props.createSkills(this.props.stateSkills);
         this.props.toggle()
       });
     };
 
     defaultIfEmpty = value => {
-      return value === "" ? "" : value;
+      return value? "" : value;
   };
     
     render() {

@@ -43,10 +43,9 @@ class NewEmployeeModal extends Component {
 
       button = (
         <Button
-          color="primary"
           className="float-right rounded-pill"
           onClick={this.toggle}
-          style={{ minWidth: "200px" }}
+          style={{ minWidth: "200px", backgroundColor:"#7030a0" }}
         >
           New Employee
         </Button>

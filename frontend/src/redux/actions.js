@@ -73,7 +73,7 @@ export const getSkillDataFromApi = () => async dispatch => {
 
 export const createEmployee = (payload) => async dispatch => {
   try{
-    mapSnakeToCamel(payload);
+    mapCamelToSnake(payload);
     const res = await axios.post(EMPLOYEES_API_URL, payload);
     var obj = {...res.data}
     mapSnakeToCamel(obj);
