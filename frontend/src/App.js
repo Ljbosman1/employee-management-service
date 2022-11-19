@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import Home from "./pages/Home";
 
 require('dotenv').config()
@@ -8,9 +8,11 @@ require('dotenv').config()
 class App extends Component {
   render() {
     return (
-      <Fragment>
-        <Home />
-      </Fragment>
+      <div className="App">
+        <header className="App-header">
+          <Home/>
+        </header>
+    </div>
     );
   }
 }

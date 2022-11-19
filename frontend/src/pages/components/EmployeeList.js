@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { getEmployeesBySearchTerm } from "../../redux/selectors";
 import { getEmployeesFromApi, deleteEmployee } from "../../redux/actions";
 import NewEmployeeModal from "./NewEmployeeModal";
+import Icon from "../../Icon.JPG";
 
 
 class EmployeeList extends Component {
@@ -41,11 +42,24 @@ class EmployeeList extends Component {
         </thead>
         <tbody>
           {!this.props.employees || this.props.employees.length <= 0 ? (
-            <tr>
-              <td colSpan="6" align="center">
-                <b>No Employees</b>
-              </td>
-            </tr>
+            <>
+              <tr>
+                <td colSpan="6" align="center">
+                  <img src={Icon} style={{height: "40vmin"}} alt="Icon" />
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="6" align="center">
+                  There is nothing here 
+                </td>
+              </tr>
+              <tr>
+                 <td colSpan="6" align="center">
+                  Create a new employee by clicking the New Employee button
+                </td>
+              </tr>
+            </>
+            
           ) : (
             this.props.employees.map((filteredEmployee, index) => (
               <tr key={filteredEmployee.employeeId}>
