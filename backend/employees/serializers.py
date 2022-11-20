@@ -1,5 +1,6 @@
+from abc import ABC
+
 from rest_framework import serializers
-from django.db.models import CharField
 from .models import Employee, Skill
 
 
@@ -47,3 +48,8 @@ class SkillSerializer(serializers.ModelSerializer):
             "years_experience",
             "seniority_rating",
         )
+
+
+class SkillDataSerializer(serializers.Serializer):
+    seniority_levels = serializers.ListField(child=serializers.CharField())
+    experience_levels = serializers.ListField(child=serializers.CharField())

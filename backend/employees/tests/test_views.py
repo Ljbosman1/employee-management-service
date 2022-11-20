@@ -107,6 +107,12 @@ class EmployeeViewTests(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Employee.objects.count(), 1)
 
+    def test_invalid_delete_id(self):
+        response = self.client.delete(
+            self.invalid_read_url
+        )
+        self.assertEqual(response.status_code, 404)
+
     def test_update(self):
         payload = {
                 "first_name": "Test3",
@@ -139,6 +145,15 @@ class EmployeeViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_invalid_update_id(self):
+        payload = json.dumps({"postal_code": 1})
+        response = self.client.put(
+            self.invalid_read_url,
+            data=payload,
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 404)
+
 
 class SkillViewTests(TestCase):
     def setUp(self):
@@ -167,14 +182,6 @@ class SkillViewTests(TestCase):
         )
         self.skill_list_url = reverse('employees:skill_list')
         self.skill_data_url = reverse('employees:skill_data')
-        self.skill_url = reverse(
-            'employees:skill_detail',
-            kwargs={'pk': self.test_skill.pk}
-        )
-        self.invalid_read_url = reverse(
-            'employees:skill_detail',
-            kwargs={'pk': -1}
-        )
 
     def test_list(self):
         response = self.client.get(self.skill_list_url)
@@ -182,81 +189,44 @@ class SkillViewTests(TestCase):
         self.assertContains(response, 'Test1')
         self.assertContains(response, 'Test2')
 
-    def test_detail(self):
-        response = self.client.get(self.skill_url)
-        data = json.loads(response.content)
-        skill = {
-            "name": self.test_skill.name,
-            "years_experience": self.test_skill.years_experience,
-            "seniority_rating": self.test_skill.seniority_rating,
-            "employee_id": self.test_employee.employee_id,
-        }
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(data, skill)
-
-    def test_invalid_detail(self):
-        response = self.client.get(self.invalid_read_url)
-        self.assertEqual(response.status_code, 404)
-
     def test_create(self):
-        post = {
-            "name": "Test3",
-            "years_experience": self.test_skill.years_experience,
-            "seniority_rating": self.test_skill.seniority_rating,
-            "employee_id": self.test_employee.employee_id,
-        }
+        post = [
+            {
+                "name": "Test3",
+                "years_experience": self.test_skill.years_experience,
+                "seniority_rating": self.test_skill.seniority_rating,
+                "employee_id": self.test_employee.employee_id,
+            },
+            {
+                "name": "Test4",
+                "years_experience": self.test_skill.years_experience,
+                "seniority_rating": self.test_skill.seniority_rating,
+                "employee_id": self.test_employee.employee_id,
+            },
+            {
+                "name": "Test5",
+                "years_experience": self.test_skill.years_experience,
+                "seniority_rating": self.test_skill.seniority_rating,
+                "employee_id": self.test_employee.employee_id,
+            }
+        ]
 
-        response = self.client.post(self.skill_list_url, post)
+        response = self.client.post(self.skill_list_url, post, content_type='application/json')
         self.assertContains(response, "Test3", status_code=201)
+        self.assertContains(response, "Test4", status_code=201)
+        self.assertContains(response, "Test5", status_code=201)
         self.assertEqual(Skill.objects.count(), 3)
 
     def test_invalid_create(self):
-        post = {
+        post = [{
             "name": "Test3",
             "years_experience": "invalid_experience",
             "seniority_rating": self.test_skill.seniority_rating,
             "employee_id": self.test_employee.employee_id,
-        }
+        }]
 
-        response = self.client.post(self.skill_list_url, post)
+        response = self.client.post(self.skill_list_url, post, content_type='application/json')
         self.assertEqual(response.status_code, 400)
-
-    def test_update(self):
-        payload = {
-            "name": "Test3",
-            "years_experience": self.test_skill.years_experience,
-            "seniority_rating": self.test_skill.seniority_rating,
-            "employee_id": self.test_employee.employee_id,
-        }
-
-        response = self.client.put(
-            self.skill_url,
-            data=json.dumps(payload),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content), payload)
-        self.assertEqual(Skill.objects.count(), 2)
-
-    def test_invalid_update(self):
-        payload = {
-            "name": "Test3",
-            "years_experience": "invalid_experience",
-            "seniority_rating": self.test_skill.seniority_rating,
-            "employee_id": self.test_employee.employee_id,
-        }
-        response = self.client.put(
-            self.skill_url,
-            data=json.dumps(payload),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, 400)
-
-    def test_delete(self):
-        response = self.client.delete(self.skill_url)
-
-        self.assertEqual(response.status_code, 204)
-        self.assertEqual(Skill.objects.count(), 1)
 
     def test_skill_data(self):
         response = self.client.get(self.skill_data_url)
