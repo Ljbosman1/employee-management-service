@@ -151,7 +151,6 @@ class NewEmployeeForm extends React.Component {
     };
 
     defaultIfEmpty = value => {
-      console.log(value)
       return ( typeof value === 'undefined' || value === "") ? "" : value;
   };
     
