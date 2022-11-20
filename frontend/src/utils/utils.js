@@ -10,7 +10,6 @@ export const mapSnakeToCamel = (obj) => {
         if (newKey !== key) {
             delete obj[key];
         }
-            
     } );
 }
 
