@@ -6,3 +6,4 @@ whitenoise==5.2.0
 django-cors-headers==3.13.0
 docker-compose==1.29.2
 psycopg2-binary==2.9.5
+drf-yasg==1.21.4
